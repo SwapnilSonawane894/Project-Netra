@@ -1,0 +1,6 @@
+2025-09-25 21:11:24,467 - WARNING - [bcrypt:622] - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/Volumes/Swapnil19/ProjectNetra2/venv_v5/lib/python3.13/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
