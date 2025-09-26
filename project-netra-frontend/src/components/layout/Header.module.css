@@ -1,0 +1,26 @@
+/* src/components/layout/Header.module.css */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: var(--card-background);
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 30px;
+  border-radius: 8px;
+}
+
+.headerTitle {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.logoutButton {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}

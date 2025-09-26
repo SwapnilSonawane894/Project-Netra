@@ -1,0 +1,42 @@
+/* src/app/login/login.module.css (Final Version) */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f2f5;
+  background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+.loginCard {
+  background: white;
+  padding: 3rem;
+  border-radius: 1rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+}
+.header { margin-bottom: 2rem; }
+.header h2 { font-size: 2.5rem; margin: 0 0 0.5rem 0; font-weight: 700; color: #333; }
+.header p { color: #6c757d; font-size: 1rem; }
+.inputGroup { margin-bottom: 1.5rem; text-align: left; }
+.inputGroup label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: #495057; }
+.inputGroup input {
+  width: 100%; padding: 0.8rem 1rem; border-radius: 0.5rem;
+  border: 1px solid #ced4da; font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.inputGroup input:focus {
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+.loginButton {
+  width: 100%; padding: 0.8rem; border: none;
+  background-color: #007bff; color: white;
+  font-size: 1.1rem; border-radius: 0.5rem;
+  cursor: pointer; font-weight: 600;
+  transition: background-color 0.2s;
+}
+.loginButton:hover { background-color: #0056b3; }
+.error { color: #dc3545; text-align: center; margin-top: 1rem; font-weight: 500;}

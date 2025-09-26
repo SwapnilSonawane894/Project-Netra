@@ -1,0 +1,6 @@
+/* src/app/(dashboard)/manage-depts/manage-depts.module.css */
+.formCard { margin-bottom: 20px; }
+.deptForm { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 15px; align-items: center; }
+.deptForm input { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid var(--border-color); }
+.deptTable { width: 100%; border-collapse: collapse; }
+.deptTable th, .deptTable td { padding: 12px; border: 1px solid var(--border-color); }

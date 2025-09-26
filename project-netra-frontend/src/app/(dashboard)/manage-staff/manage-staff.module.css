@@ -1,0 +1,76 @@
+/* src/app/(dashboard)/manage-staff/manage-staff.module.css (Final, Corrected Version) */
+
+.formCard {
+    margin-bottom: 20px;
+}
+
+.staffForm {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.topInputs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Responsive grid */
+    gap: 20px;
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+}
+
+.inputGroup label {
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.staffForm input[type="text"],
+.staffForm input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid var(--border-color);
+}
+
+/* --- THIS IS THE UI FIX --- */
+/* Ensure the checkbox and label are treated as a single block */
+.checkboxGroup {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    /* Remove grid-column to let it flow naturally in the flex container */
+}
+
+.subjectSelector label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.subjectList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.subjectItem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.submitButton button {
+    width: 100%;
+}
+
+/* Table Styles */
+.tableContainer { overflow-x: auto; }
+.staffTable { width: 100%; border-collapse: collapse; }
+.staffTable th, .staffTable td { padding: 12px; border: 1px solid var(--border-color); }

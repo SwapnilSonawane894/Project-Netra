@@ -1,0 +1,6 @@
+/* src/app/(dashboard)/manage-subjects/manage-subjects.module.css */
+.formCard { margin-bottom: 20px; }
+.subjectForm { display: grid; grid-template-columns: 3fr 1fr; gap: 15px; align-items: center; }
+.subjectForm input { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid var(--border-color); }
+.subjectTable { width: 100%; border-collapse: collapse; }
+.subjectTable th, .subjectTable td { padding: 12px; border: 1px solid var(--border-color); }

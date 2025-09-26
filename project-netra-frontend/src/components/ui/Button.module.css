@@ -1,0 +1,26 @@
+/* src/components/ui/Button.module.css */
+.button {
+  padding: 12px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: white;
+  transition: opacity 0.2s;
+}
+
+.button:hover {
+  opacity: 0.9;
+}
+
+.primary {
+  background-color: var(--primary-color);
+}
+
+.secondary {
+  background-color: #6c757d;
+}
+
+.danger {
+  background-color: #dc3545;
+}

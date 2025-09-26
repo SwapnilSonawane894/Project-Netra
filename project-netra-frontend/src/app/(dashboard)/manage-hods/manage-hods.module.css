@@ -1,0 +1,10 @@
+/* src/app/(dashboard)/manage-hods/manage-hods.module.css */
+.formCard { margin-bottom: 20px; }
+.hodForm { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.hodForm select, .hodForm input {
+    width: 100%; padding: 10px; border-radius: 5px;
+    border: 1px solid var(--border-color);
+}
+.hodForm button { grid-column: 1 / -1; }
+.hodTable { width: 100%; border-collapse: collapse; }
+.hodTable th, .hodTable td { padding: 12px; border: 1px solid var(--border-color); }

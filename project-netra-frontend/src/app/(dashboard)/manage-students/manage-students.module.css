@@ -1,0 +1,113 @@
+/* src/app/(dashboard)/manage-students/manage-students.module.css (Final Version) */
+
+/* --- Registration Form --- */
+.registrationLayout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+.registrationForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+}
+
+.inputGroup label {
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.inputGroup input, .inputGroup select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.submitButton button {
+    width: 100%;
+}
+
+.error {
+    color: #dc3545;
+    text-align: center;
+}
+
+
+/* --- Webcam Capture Section --- */
+.captureSection {
+    border-left: 1px solid var(--border-color);
+    padding-left: 30px;
+}
+
+.webcamContainer {
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.captureSection button {
+    width: 100%;
+}
+
+.thumbnails {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.thumbnail {
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+
+.thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.thumbnail button {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    line-height: 18px;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+}
+
+
+/* --- Filter Card and Student Table --- */
+.filterCard {
+    margin: 20px 0;
+    max-width: 300px;
+}
+
+.studentTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.studentTable th, .studentTable td {
+  padding: 12px 15px;
+  border: 1px solid var(--border-color);
+  text-align: left;
+}

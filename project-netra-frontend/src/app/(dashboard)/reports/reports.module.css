@@ -1,0 +1,45 @@
+/* src/app/(dashboard)/reports/reports.module.css (Final Version) */
+.filterCard { margin-bottom: 20px; }
+.filters { display: flex; align-items: center; gap: 10px; }
+.filters input { padding: 8px; border: 1px solid var(--border-color); border-radius: 5px; font-size: 16px; }
+.reportsContainer { display: flex; flex-direction: column; gap: 20px; }
+
+.lectureCard {
+    background-color: var(--card-background);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.lectureHeader {
+    display: flex; flex-wrap: wrap; gap: 15px; align-items: center;
+    padding: 15px 20px; cursor: pointer; background: none;
+    border: none; width: 100%; text-align: left;
+}
+.lectureHeader:hover { background-color: var(--background-color); }
+.lectureHeader h3 { margin: 0; flex-grow: 1; font-size: 1.1rem; }
+.headerInfo { display: flex; gap: 15px; flex-wrap: wrap; }
+.headerInfo span { font-size: 14px; color: #555; }
+.toggleIcon { margin-left: auto; font-size: 16px; transition: transform 0.3s ease; }
+.toggleIcon.open { transform: rotate(180deg); }
+
+.lectureContentWrapper {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out;
+}
+.lectureContentWrapper.open { max-height: 2000px; /* Increased max-height */ }
+.lectureContent { padding: 0 20px 20px 20px; border-top: 1px solid var(--border-color); }
+.lectureContent h4 { margin-top: 20px; margin-bottom: 10px; }
+
+.absentSection {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--border-color);
+}
+
+.tableContainer { overflow-x: auto; }
+.reportTable { width: 100%; border-collapse: collapse; margin-top: 10px;}
+.reportTable th, .reportTable td { padding: 12px; border-bottom: 1px solid var(--border-color); text-align: left; white-space: nowrap; }
+.reportTable th { background-color: var(--background-color); }
+.reportTable tr:last-child td { border-bottom: none; }
