@@ -71,14 +71,13 @@ out/
 *.swp
 *.swo
 
-# Registration photos (may contain sensitive data)
-data/registration_photos/
-
-# Videos
-data/videos/
-*.mov
-*.mp4
-*.avi
+# Allow data folder contents
+# Removed restrictions on registration photos and videos for upload
+# data/registration_photos/
+# data/videos/
+# *.mov
+# *.mp4
+# *.avi
 
 # Jupyter Notebook
 .ipynb_checkpoints
