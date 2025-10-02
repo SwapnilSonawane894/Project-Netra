@@ -1,74 +1,92 @@
-// src/app/(dashboard)/reports/page.js (Corrected and Final)
+// project-netra-frontend/src/app/(dashboard)/reports/page.js (FINAL AND CORRECTED)
 "use client";
-import { useState, useEffect } from 'react';
-import Card from '../../../components/ui/Card';
-import Button from '../../../components/ui/Button'; // --- THIS IS THE CRITICAL FIX ---
+import { useState, useEffect, useCallback } from 'react';
+import DatePicker from 'react-datepicker';
+import { useAuth } from '@/context/AuthContext';
 import styles from './reports.module.css';
-import { getAttendanceRecords, getAbsentRecords } from '../../../services/api';
+import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
+import { getAttendanceRecords, getAbsentRecords } from '@/services/api';
 
-// --- NEW: A dedicated component for each collapsible card ---
-const LectureReportCard = ({ lecture, filterDate }) => {
-    const [isOpen, setIsOpen] = useState(true);
-    const [absentStudents, setAbsentStudents] = useState([]);
-    const [loadingAbsentees, setLoadingAbsentees] = useState(false);
+const formatDate = (date) => new Date(date).toISOString().split('T')[0];
 
-    const toggleAbsent = async () => {
-        if (absentStudents.length > 0) {
-            setAbsentStudents([]); // Clear to hide
-            return;
+function Lecture({ lecture }) {
+    const [isOpen, setIsOpen] = useState(false);
+    const [absentees, setAbsentees] = useState([]);
+    const [isLoadingAbsentees, setIsLoadingAbsentees] = useState(false);
+    const [absenteesFetched, setAbsenteesFetched] = useState(false);
+
+    // This was causing a ReferenceError because it was removed from the component's props
+    const presentCount = lecture.present_students.length;
+
+    const handleShowAbsentees = async () => {
+        setIsLoadingAbsentees(true);
+        setAbsenteesFetched(true);
+        try {
+            // Correctly pass all required parameters, including the class
+            const data = await getAbsentRecords(lecture.date, lecture.subject, lecture.time_slot, lecture.class);
+            setAbsentees(data);
+        } catch (error) {
+            alert(`Could not fetch absentee list: ${error.message}`);
+        } finally {
+            setIsLoadingAbsentees(false);
         }
-        setLoadingAbsentees(true);
-        const data = await getAbsentRecords(filterDate, lecture.subject, lecture.time_slot);
-        setAbsentStudents(data);
-        setLoadingAbsentees(false);
     };
 
     return (
         <Card className={styles.lectureCard}>
-            <div className={styles.lectureHeader} onClick={() => setIsOpen(!isOpen)}>
-                <h3>{lecture.subject}</h3>
+            <button className={styles.lectureHeader} onClick={() => setIsOpen(!isOpen)}>
+                <h3>{lecture.subject} ({lecture.class || 'N/A'})</h3>
                 <div className={styles.headerInfo}>
-                    <span><strong>Teacher:</strong> {lecture.teacher}</span>
-                    <span><strong>Hall:</strong> {lecture.hall}</span>
                     <span><strong>Time:</strong> {lecture.time_slot}</span>
-                    <span><strong>Present:</strong> {lecture.students.length}</span>
+                    <span><strong>Teacher:</strong> {lecture.teacher}</span>
+                    <span><strong>Present:</strong> {presentCount}</span>
                 </div>
                 <span className={`${styles.toggleIcon} ${isOpen ? styles.open : ''}`}>▼</span>
-            </div>
-            <div className={`${styles.lectureContentWrapper} ${isOpen ? styles.open : ''}`}>
+            </button>
+
+            {/* The content should only render when isOpen is true */}
+            {isOpen && (
                 <div className={styles.lectureContent}>
                     <h4>Present Students</h4>
-                    <div className={styles.tableContainer}>
-                        <table className={styles.reportTable}>
-                            <thead>
-                                <tr><th>Roll No</th><th>Name</th><th>Marked At</th></tr>
-                            </thead>
-                            <tbody>
-                                {lecture.students.map(student => (
-                                    <tr key={student.id}>
-                                        <td>{student.roll_no}</td>
-                                        <td>{student.name}</td>
-                                        <td>{new Date(student.timestamp).toLocaleTimeString()}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                    
+                    {presentCount > 0 ? (
+                        <div className={styles.tableContainer}>
+                            <table className={styles.reportTable}>
+                                <thead>
+                                    <tr><th>Roll No</th><th>Name</th><th>Timestamp</th></tr>
+                                </thead>
+                                <tbody>
+                                    {lecture.present_students.map(record => (
+                                        <tr key={record.id}>
+                                            <td>{record.roll_no}</td>
+                                            <td>{record.name}</td>
+                                            <td>{new Date(record.timestamp).toLocaleTimeString()}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    ) : (
+                        <p>No students were marked present for this lecture.</p>
+                    )}
+
                     <div className={styles.absentSection}>
-                        <Button onClick={toggleAbsent} variant="secondary">
-                            {loadingAbsentees ? 'Loading...' : (absentStudents.length > 0 ? 'Hide Absent Students' : 'Show Absent Students')}
+                        <Button onClick={handleShowAbsentees} variant="secondary" disabled={isLoadingAbsentees}>
+                            {isLoadingAbsentees ? 'Loading...' : 'Show Absentees'}
                         </Button>
-                        {absentStudents.length > 0 && (
-                            <>
+                        
+                        {isLoadingAbsentees && <p>Loading absentee list...</p>}
+
+                        {absenteesFetched && !isLoadingAbsentees && (
+                             <div className={styles.tableContainer} style={{marginTop: '15px'}}>
                                 <h4>Absent Students</h4>
-                                <div className={styles.tableContainer}>
+                                {absentees.length > 0 ? (
                                     <table className={styles.reportTable}>
                                         <thead>
                                             <tr><th>Roll No</th><th>Name</th><th>Class</th></tr>
                                         </thead>
                                         <tbody>
-                                            {absentStudents.map(student => (
+                                            {absentees.map(student => (
                                                 <tr key={student.roll_no}>
                                                     <td>{student.roll_no}</td>
                                                     <td>{student.name}</td>
@@ -77,72 +95,86 @@ const LectureReportCard = ({ lecture, filterDate }) => {
                                             ))}
                                         </tbody>
                                     </table>
-                                </div>
-                            </>
+                                ) : <p>No absentees were found for this lecture.</p>}
+                            </div>
                         )}
                     </div>
                 </div>
-            </div>
+            )}
         </Card>
     );
-};
+}
 
-const groupRecordsByLecture = (records) => {
-    if (!records || records.length === 0) return {};
-    return records.reduce((acc, record) => {
-        const key = `${record.time_slot}_${record.subject}`;
-        if (!acc[key]) {
-            acc[key] = {
-                subject: record.subject, teacher: record.teacher, hall: record.hall,
-                time_slot: record.time_slot, students: []
-            };
-        }
-        acc[key].students.push(record);
-        return acc;
-    }, {});
-};
 
 export default function ReportsPage() {
+    const { user } = useAuth();
     const [groupedRecords, setGroupedRecords] = useState({});
-    const [absentStudents, setAbsentStudents] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [filterDate, setFilterDate] = useState(new Date().toISOString().split('T')[0]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [selectedDate, setSelectedDate] = useState(new Date());
+
+    const fetchRecords = useCallback(async (date) => {
+        if (!user) return;
+        setIsLoading(true);
+        try {
+            const data = await getAttendanceRecords(formatDate(date));
+            const groups = data.reduce((acc, record) => {
+                const key = `${record.subject}-${record.time_slot}`;
+                if (!acc[key]) {
+                    acc[key] = {
+                        subject: record.subject,
+                        time_slot: record.time_slot,
+                        teacher: record.teacher,
+                        date: record.date,
+                        class: record.student_class, // Capture the class for the lecture group
+                        present_students: []
+                    };
+                }
+                acc[key].present_students.push(record);
+                return acc;
+            }, {});
+            setGroupedRecords(groups);
+        } catch (error) {
+            console.error("Fetch error:", error);
+            // Optionally set an error state to show in the UI
+        } finally {
+            setIsLoading(false);
+        }
+    }, [user]);
 
     useEffect(() => {
-        const fetchRecords = async () => {
-            setLoading(true);
-            const data = await getAttendanceRecords(filterDate);
-            setGroupedRecords(groupRecordsByLecture(data));
-            setLoading(false);
-        };
-        fetchRecords();
-    }, [filterDate]);
+        fetchRecords(selectedDate);
+    }, [selectedDate, fetchRecords]);
 
     return (
         <div>
-            <h1>Attendance Report</h1>
+            <h1>Attendance Reports</h1>
             <Card className={styles.filterCard}>
                 <div className={styles.filters}>
-                    <label htmlFor="date-filter">Filter by Date:</label>
-                    <input type="date" id="date-filter" value={filterDate} onChange={(e) => setFilterDate(e.target.value)} />
+                    <label htmlFor="date-picker" style={{marginRight: '10px', fontWeight: '500'}}>Select Date:</label>
+                    <DatePicker
+                        id="date-picker"
+                        selected={selectedDate}
+                        onChange={(date) => setSelectedDate(date)}
+                        dateFormat="yyyy-MM-dd"
+                        className={styles.datePicker}
+                    />
                 </div>
             </Card>
 
-            {loading ? <p>Loading records...</p> : (
-                <div className={styles.reportsContainer}>
-                    {Object.keys(groupedRecords).length > 0 ? (
-                        Object.values(groupedRecords).map(lecture => (
-                            <LectureReportCard
-                                key={lecture.time_slot + lecture.subject}
-                                lecture={lecture}
-                                filterDate={filterDate}
-                            />
-                        ))
-                    ) : (
-                        <Card><p>No attendance records found for this date.</p></Card>
-                    )}
-                </div>
-            )}
+            <div className={styles.reportsContainer}>
+                {isLoading ? (
+                    <p>Loading reports...</p>
+                ) : Object.keys(groupedRecords).length > 0 ? (
+                    Object.values(groupedRecords).map(lecture => (
+                        // Removed the props that were causing errors
+                        <Lecture key={`${lecture.subject}-${lecture.time_slot}`} lecture={lecture} />
+                    ))
+                ) : (
+                    <Card>
+                        <p>No attendance records found for {formatDate(selectedDate)}.</p>
+                    </Card>
+                )}
+            </div>
         </div>
     );
 }

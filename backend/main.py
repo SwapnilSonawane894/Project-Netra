@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from . import database_handler
 
 # Import all route modules
-from .routes import attendance, registration, management, auth, principal, hod, staff
+from .routes import attendance, registration, management, auth, principal, hod, staff, users
 
 # Initialize the database on startup
 database_handler.initialize_database()
@@ -32,6 +32,7 @@ app.include_router(staff.router, prefix="/api/staff", tags=["Staff Actions"])
 app.include_router(attendance.router, prefix="/api/attendance", tags=["Attendance"])
 app.include_router(registration.router, prefix="/api/registration", tags=["Registration"])
 app.include_router(management.router, prefix="/api/management", tags=["General Management"])
+app.include_router(users.router, prefix="/api/users", tags=["User Actions"])
 
 
 @app.get("/")

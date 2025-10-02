@@ -34,12 +34,24 @@ class DepartmentResponse(BaseModel):
 
 # --- Endpoints ---
 
+class DepartmentUpdate(BaseModel): # <<< NEW MODEL
+    name: str
+    code: str
+
+class ProfileUpdate(BaseModel): # <<< NEW MODEL
+    full_name: str
+    username: str
+
+class HodDepartmentUpdate(BaseModel):
+    department: str
+
+
+
 @router.post("/hods", response_model=HodResponse)
 async def create_hod(
     hod_data: HodCreate,
     current_user: dict = Depends(auth.require_role(['principal']))
 ):
-    """Principal creates a new Head of Department."""
     if database_handler.get_user_by_username(hod_data.username):
         raise HTTPException(status_code=400, detail="Username already exists.")
     
@@ -54,21 +66,60 @@ async def create_hod(
 
 @router.get("/hods", response_model=List[HodResponse])
 async def get_all_hods(current_user: dict = Depends(auth.require_role(['principal']))):
-    """Principal gets a list of all HODs."""
     return database_handler.get_users_by_role('hod')
+
+@router.delete("/hods/{hod_id}")
+async def delete_hod(
+    hod_id: int,
+    current_user: dict = Depends(auth.require_role(['principal']))
+):
+    success = database_handler.delete_user(hod_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="HOD not found.")
+    return {"status": "success", "message": f"HOD with ID {hod_id} deleted."}
+
+@router.put("/hods/{hod_id}/department")
+async def update_hod_department(
+    hod_id: int,
+    update_data: HodDepartmentUpdate,
+    current_user: dict = Depends(auth.require_role(['principal']))
+):
+    success = database_handler.update_hod_department(hod_id, update_data.department)
+    if not success:
+        raise HTTPException(status_code=404, detail="HOD or Department not found.")
+    return {"status": "success", "message": "HOD's department updated successfully."}
 
 @router.post("/departments", response_model=DepartmentResponse)
 async def create_department(
     dept_data: DepartmentCreate,
     current_user: dict = Depends(auth.require_role(['principal']))
 ):
-    """Principal creates a new department."""
     new_dept = database_handler.create_department(dept_data.name, dept_data.code.upper())
     if not new_dept:
         raise HTTPException(status_code=400, detail="Department code already exists.")
     return new_dept
 
 @router.get("/departments", response_model=List[DepartmentResponse])
-async def get_all_departments(current_user: dict = Depends(auth.require_role(['principal']))):
-    """Principal gets a list of all departments."""
+async def get_all_departments(current_user: dict = Depends(auth.require_role(['principal', 'hod', 'class-teacher']))):
     return database_handler.get_all_departments()
+
+@router.delete("/departments/{dept_id}")
+async def delete_department(
+    dept_id: int,
+    current_user: dict = Depends(auth.require_role(['principal']))
+):
+    success = database_handler.delete_department(dept_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Department not found.")
+    return {"status": "success", "message": f"Department with ID {dept_id} deleted."}
+
+@router.put("/departments/{dept_id}", response_model=DepartmentResponse)
+async def update_department(
+    dept_id: int,
+    dept_data: DepartmentUpdate,
+    current_user: dict = Depends(auth.require_role(['principal']))
+):
+    success = database_handler.update_department(dept_id, dept_data.name, dept_data.code.upper())
+    if not success:
+        raise HTTPException(status_code=400, detail="Department code may already exist.")
+    return {"id": dept_id, "name": dept_data.name, "code": dept_data.code.upper()}

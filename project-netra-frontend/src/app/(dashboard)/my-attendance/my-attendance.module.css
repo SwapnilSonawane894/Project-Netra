@@ -1,34 +1,49 @@
-/* src/app/(dashboard)/reports/reports.module.css (Final Version) */
+/* src/app/(dashboard)/my-attendance/my-attendance.module.css (Corrected with Animations) */
 .filterCard { margin-bottom: 20px; }
 .filters { display: flex; align-items: center; gap: 10px; }
-.filters input { padding: 8px; border: 1px solid var(--border-color); border-radius: 5px; font-size: 16px; }
 .reportsContainer { display: flex; flex-direction: column; gap: 20px; }
 
 .lectureCard {
     background-color: var(--card-background);
     border-radius: 8px;
     border: 1px solid var(--border-color);
-    overflow: hidden;
+    overflow: hidden; /* Important for the animation */
 }
 
 .lectureHeader {
     display: flex; flex-wrap: wrap; gap: 15px; align-items: center;
     padding: 15px 20px; cursor: pointer; background: none;
     border: none; width: 100%; text-align: left;
+    transition: background-color 0.2s; /* Smooth hover effect */
 }
 .lectureHeader:hover { background-color: var(--background-color); }
 .lectureHeader h3 { margin: 0; flex-grow: 1; font-size: 1.1rem; }
 .headerInfo { display: flex; gap: 15px; flex-wrap: wrap; }
 .headerInfo span { font-size: 14px; color: #555; }
-.toggleIcon { margin-left: auto; font-size: 16px; transition: transform 0.3s ease; }
-.toggleIcon.open { transform: rotate(180deg); }
+.toggleIcon { 
+    margin-left: auto; 
+    font-size: 16px; 
+    /* --- THE FIX: Smooth rotation for the arrow icon --- */
+    transition: transform 0.3s ease; 
+}
+.toggleIcon.open { 
+    transform: rotate(180deg); 
+}
 
+/* --- THE CRITICAL FIX FOR ANIMATION & TOGGLE --- */
 .lectureContentWrapper {
-    max-height: 0;
+    max-height: 0; /* Start in a collapsed state */
     overflow: hidden;
+    /* This creates the smooth slide-down and slide-up animation */
     transition: max-height 0.4s ease-in-out;
 }
-.lectureContentWrapper.open { max-height: 2000px; /* Increased max-height */ }
+.lectureContentWrapper.open { 
+    /* When 'open' class is added, animate to a large height */
+    max-height: 2000px; /* A large value to accommodate any content */
+}
+/* --- END OF CRITICAL FIX --- */
+
+
 .lectureContent { padding: 0 20px 20px 20px; border-top: 1px solid var(--border-color); }
 .lectureContent h4 { margin-top: 20px; margin-bottom: 10px; }
 
@@ -36,14 +51,6 @@
     margin-top: 20px;
     padding-top: 20px;
     border-top: 1px dashed var(--border-color);
-}
-.datePicker {
-    padding: 8px;
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
-    font-size: 16px;
-    width: 150px; /* Give it a nice width */
-    text-align: center;
 }
 .tableContainer { overflow-x: auto; }
 .reportTable { width: 100%; border-collapse: collapse; margin-top: 10px;}

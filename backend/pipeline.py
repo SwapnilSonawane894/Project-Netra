@@ -23,13 +23,35 @@ class VerificationPipeline:
         try:
             self.video_source = os.getenv("VIDEO_SOURCE", "0")
             self.recognition_model = os.getenv("RECOGNITION_MODEL", "ArcFace")
-            self.recognition_threshold = float(os.getenv("RECOGNITION_THRESHOLD", 0.6))
+            self.recognition_threshold = float(os.getenv("RECOGNITION_THRESHOLD", 0.4))
             self.frame_skip = int(os.getenv("FRAME_SKIP", 5))
             self.current_lecture = current_lecture if current_lecture else {}
             
             logger.info("Using RetinaFace for detection and ArcFace for recognition.")
             logger.info("Loading student database...")
+            
+            # Load student database - revert to original approach for accuracy
+            logger.info("Loading all student database for face recognition...")
             self.student_db = database_handler.get_all_student_data()
+            logger.info(f"Loaded {len(self.student_db)} total students for face recognition")
+            
+            # Validate student database for debugging
+            valid_students = 0
+            for roll_no, data in self.student_db.items():
+                if "arcface_embedding" in data and data["arcface_embedding"] is not None:
+                    valid_students += 1
+                else:
+                    logger.warning(f"Student {roll_no} has missing or invalid embedding")
+            logger.info(f"Valid embeddings: {valid_students}/{len(self.student_db)}")
+            
+            # If class info is available, log it for filtering attendance records later
+            if current_lecture and current_lecture.get('class'):
+                lecture_class = current_lecture.get('class')
+                logger.info(f"Attendance will be recorded for class: {lecture_class}")
+                self.target_class = lecture_class
+            else:
+                logger.warning("No class information provided in lecture")
+                self.target_class = None
             
             self.tracker = BYTETracker(frame_rate=30)
             self.stop_event = stop_event
@@ -53,11 +75,25 @@ class VerificationPipeline:
 
     def _match_embedding_to_db(self, embedding):
         min_dist, matched_roll_no = float('inf'), "Unknown"
+        second_min_dist = float('inf')
+        
         for roll_no, data in self.student_db.items():
             dist = cosine(embedding, data["arcface_embedding"])
             if dist < min_dist:
+                second_min_dist = min_dist
                 min_dist, matched_roll_no = dist, roll_no
-        return matched_roll_no if min_dist < self.recognition_threshold else "Unknown"
+            elif dist < second_min_dist:
+                second_min_dist = dist
+        
+        # Log matching details for debugging
+        if min_dist < self.recognition_threshold:
+            confidence_gap = second_min_dist - min_dist
+            student_name = self.student_db.get(matched_roll_no, {}).get("name", "Unknown")
+            logger.info(f"Face matched: {student_name} ({matched_roll_no}) - Distance: {min_dist:.3f}, Confidence Gap: {confidence_gap:.3f}")
+            return matched_roll_no
+        else:
+            logger.debug(f"No match found - Minimum distance: {min_dist:.3f} (threshold: {self.recognition_threshold})")
+            return "Unknown"
 
     def run(self):
         if not self.is_initialized: return
@@ -114,8 +150,18 @@ class VerificationPipeline:
                         self.tracks[track_id] = {"name": student_name, "roll_no": roll_no}
                         
                         if roll_no != "Unknown" and roll_no not in self.confirmed_attendance:
-                            self.confirmed_attendance[roll_no] = {"name": student_name, "timestamp": time.strftime('%Y-%m-%d %H:%M:%S')}
-                            database_handler.record_attendance(roll_no, student_name, self.current_lecture)
+                            # Check if student belongs to the target class (if specified)
+                            should_record = True
+                            if self.target_class:
+                                student_class = database_handler.get_student_class(roll_no)
+                                if student_class != self.target_class:
+                                    logger.info(f"Student {student_name} ({roll_no}) detected but belongs to {student_class}, not {self.target_class}. Skipping attendance.")
+                                    should_record = False
+                            
+                            if should_record:
+                                self.confirmed_attendance[roll_no] = {"name": student_name, "timestamp": time.strftime('%Y-%m-%d %H:%M:%S')}
+                                database_handler.record_attendance(roll_no, student_name, self.current_lecture)
+                                logger.info(f"Recorded attendance for {student_name} ({roll_no}) in class {self.target_class or 'Any'}")
                     else:
                         self.tracks[track_id] = {"name": "Unknown", "roll_no": "Unknown"}
                 
