@@ -1,0 +1,82 @@
+Metadata-Version: 2.4
+Name: bytetracker
+Version: 0.3.2
+Summary: Packaged version of the ByteTrack repository
+Home-page: https://github.com/kadirnar/bytetrack-pip
+Author: kadirnar
+License: MIT
+Keywords: machine-learning,deep-learning,pytorch,vision,image-classification,object-detection,object-tracking,tracker,bytetrack
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Operating System :: OS Independent
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Education
+Classifier: Topic :: Scientific/Engineering
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.5
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: lap==0.4.0
+Requires-Dist: scipy==1.9.3
+Requires-Dist: torch==1.13.0
+Dynamic: author
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+<div align="center">
+<h2>
+  ByteTrack-Pip: Packaged version of the ByteTrack repository  
+</h2>
+<h4>
+    <img width="700" alt="teaser" src="assets/demo.gif">
+</h4>
+<div>
+    <a href="https://pepy.tech/project/bytetracker"><img src="https://pepy.tech/badge/bytetracker" alt="downloads"></a>
+    <a href="https://badge.fury.io/py/bytetracker"><img src="https://badge.fury.io/py/bytetracker.svg" alt="pypi version"></a>
+</div>
+</div>
+
+## <div align="center">Overview</div>
+
+This repo is a packaged version of the [ByteTrack](https://github.com/ifzhang/ByteTrack) algorithm.
+### Installation
+```
+pip install bytetracker
+```
+
+### Detection Model + ByteTrack 
+```python
+from bytetracker import BYTETracker
+
+tracker = BYTETracker(args)
+for image in images:
+   dets = detector(image)
+   online_targets = tracker.update(dets)
+```
+### Reference:
+ - [Yolov5-Pip](https://github.com/fcakyon/yolov5-pip)
+ - [ByteTrack](https://github.com/ifzhang/ByteTrack)
+
+### Citation
+```bibtex
+@article{zhang2022bytetrack,
+  title={ByteTrack: Multi-Object Tracking by Associating Every Detection Box},
+  author={Zhang, Yifu and Sun, Peize and Jiang, Yi and Yu, Dongdong and Weng, Fucheng and Yuan, Zehuan and Luo, Ping and Liu, Wenyu and Wang, Xinggang},
+  booktitle={Proceedings of the European Conference on Computer Vision (ECCV)},
+  year={2022}
+}
+```
