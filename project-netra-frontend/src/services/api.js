@@ -1,7 +1,20 @@
 // src/services/api.js (Corrected and Final)
 
-// This should be defined in a .env.local file in your frontend's root directory
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+
+// --- Codespaces/Production-safe API URL detection ---
+let API_URL = '';
+if (typeof window !== 'undefined') {
+  const hostname = window.location.hostname;
+  // Codespaces: replace -3000 with -8000 and use HTTPS
+  if (hostname.endsWith('.app.github.dev')) {
+    API_URL = `https://${hostname.replace('-3000', '-8000')}`;
+  } else {
+    // fallback for local dev
+    API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+  }
+} else {
+  API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+}
 
 // --- Helper Function to get Auth Headers ---
 const getAuthHeaders = () => {

@@ -40,7 +40,6 @@ venv.bak/
 .env.production.local
 
 # Database files (keep the database structure but ignore actual data)
-data/project_netra_final.db
 
 # Temporary files
 temp/
