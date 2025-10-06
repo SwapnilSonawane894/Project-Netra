@@ -21,7 +21,7 @@ class HodResponse(BaseModel):
     id: int
     username: str
     full_name: str
-    department: str
+    department: str | None
 
 class DepartmentCreate(BaseModel):
     name: str

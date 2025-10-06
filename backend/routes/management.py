@@ -228,24 +228,30 @@ async def get_available_classes(current_user: dict = Depends(auth.get_current_us
 
 @router.post("/notify_absentees")
 async def notify_absentees_endpoint(request: LectureEndRequest):
-    absent_students = database_handler.get_absent_students_for_lecture(
-        filter_date=request.date,
-        subject=request.subject,
-        time_slot=request.time_slot,
-        student_class=request.student_class  # --- FIX: Pass the class to the DB function
-    )
-    if not absent_students:
-        return {"status": "success", "message": "No absentees to notify."}
-    
-    sent_count = 0
-    for student in absent_students:
-        if student.get("parent_phone"):
-            if whatsapp_sender.send_absentee_message(
-                parent_phone=student["parent_phone"], student_name=student["name"],
-                subject=request.subject, teacher=request.teacher, time_slot=request.time_slot
-            ):
-                sent_count += 1
-    return {"status": "success", "message": f"Notification process complete. Sent {sent_count} of {len(absent_students)} messages."}
+    try:
+        absent_students = database_handler.get_absent_students_for_lecture(
+            filter_date=request.date,
+            subject=request.subject,
+            time_slot=request.time_slot,
+            student_class=request.student_class  # --- FIX: Pass the class to the DB function
+        )
+        if not absent_students:
+            logger.info(f"No absentees found for {request.subject} at {request.time_slot} on {request.date}")
+            return {"status": "success", "message": "No absentees to notify."}
+        
+        logger.info(f"Found {len(absent_students)} absentees for {request.subject}")
+        sent_count = 0
+        for student in absent_students:
+            if student.get("parent_phone"):
+                if whatsapp_sender.send_absentee_message(
+                    parent_phone=student["parent_phone"], student_name=student["name"],
+                    subject=request.subject, teacher=request.teacher, time_slot=request.time_slot
+                ):
+                    sent_count += 1
+        return {"status": "success", "message": f"Notification process complete. Sent {sent_count} of {len(absent_students)} messages."}
+    except Exception as e:
+        logger.error(f"Error in notify_absentees_endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to process absentee notifications: {str(e)}")
 
 @router.get("/attendance_records")
 async def get_records(

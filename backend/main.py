@@ -5,6 +5,9 @@ from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 from . import database_handler
 
+# Load environment variables from .env file
+load_dotenv()
+
 # Import all route modules
 from .routes import attendance, registration, management, auth, principal, hod, staff, users
 
@@ -18,7 +21,7 @@ origins = [
 ]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=['*'],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

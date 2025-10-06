@@ -1,16 +1,13 @@
-2025-09-25 21:11:24,467 - WARNING - [bcrypt:622] - (trapped) error reading bcrypt version
+2025-10-06 16:35:07,109 - WARNING - [bcrypt:622] - (trapped) error reading bcrypt version
 Traceback (most recent call last):
-  File "/Volumes/Swapnil19/ProjectNetra2/venv_v5/lib/python3.13/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+  File "/workspaces/Project-Netra/venv/lib/python3.12/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
     version = _bcrypt.__about__.__version__
               ^^^^^^^^^^^^^^^^^
 AttributeError: module 'bcrypt' has no attribute '__about__'
-2025-10-02 06:07:53,993 - INFO - [whatsapp_sender:17] - TWILIO DEBUG: Credentials loaded from .env file.
-2025-10-02 06:10:44,009 - INFO - [whatsapp_sender:17] - TWILIO DEBUG: Credentials loaded from .env file.
-2025-10-02 06:10:51,865 - INFO - [whatsapp_sender:17] - TWILIO DEBUG: Credentials loaded from .env file.
-2025-10-02 06:14:54,636 - INFO - [whatsapp_sender:17] - TWILIO DEBUG: Credentials loaded from .env file.
-2025-10-02 06:16:57,236 - INFO - [whatsapp_sender:17] - TWILIO DEBUG: Credentials loaded from .env file.
-2025-10-02 06:49:58,955 - INFO - [whatsapp_sender:17] - TWILIO DEBUG: Credentials loaded from .env file.
-2025-10-02 06:53:10,197 - INFO - [whatsapp_sender:17] - TWILIO DEBUG: Credentials loaded from .env file.
-2025-10-04 00:55:16,486 - INFO - [whatsapp_sender:17] - TWILIO DEBUG: Credentials loaded from .env file.
-2025-10-04 00:57:53,421 - ERROR - [management:184] - Error getting timetable: no such table: departments
-2025-10-04 00:58:08,452 - ERROR - [management:184] - Error getting timetable: no such table: departments
+2025-10-06 16:35:21,783 - INFO - [whatsapp_sender:17] - TWILIO DEBUG: Credentials loaded from .env file.
+2025-10-06 16:36:06,136 - WARNING - [bcrypt:622] - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/workspaces/Project-Netra/venv/lib/python3.12/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
