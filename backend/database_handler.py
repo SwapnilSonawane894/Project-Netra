@@ -4,6 +4,7 @@ import pickle
 import json
 import os
 from datetime import date, datetime
+import numpy as np
 
 # Import auth module ONLY to use its hashing function from the parent directory
 from . import auth 
@@ -29,7 +30,7 @@ def initialize_database():
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE NOT NULL,
             password_hash TEXT NOT NULL, full_name TEXT NOT NULL, role TEXT NOT NULL,
-            assigned_class TEXT, -- e.g., 'SYCO', 'TYCO'. Only for mentors.
+            assigned_class TEXT, -- e.g., 'SYCO', 'TYCO'. Only for class-teachers.
             department_id INTEGER,
             FOREIGN KEY(department_id) REFERENCES departments(id) ON DELETE SET NULL
         )''')
@@ -69,7 +70,8 @@ def initialize_database():
             student_class TEXT NOT NULL,
             parent_phone_number TEXT,
             department_id INTEGER,
-            arcface_embedding BLOB NOT NULL,
+            arcface_embedding BLOB,
+            adaface_embedding BLOB,  -- NEW COLUMN
             FOREIGN KEY(department_id) REFERENCES departments(id) ON DELETE SET NULL
         )''')
     # Timetable table
@@ -147,9 +149,11 @@ def add_student(roll_no, name, student_class, embedding, parent_phone_number=Non
     cursor = conn.cursor()
     # --- CHANGE: Look up department ID from the code ---
     department_id = _get_department_id_by_code(cursor, department)
-    serialized_embedding = pickle.dumps(embedding)
+    serialized_embedding = sqlite3.Binary(embedding.tobytes())
+    
+    # --- CRITICAL FIX: Insert into the new 'adaface_embedding' column ---
     cursor.execute(
-        "REPLACE INTO students (roll_no, name, student_class, parent_phone_number, department_id, arcface_embedding) VALUES (?, ?, ?, ?, ?, ?)",
+        "REPLACE INTO students (roll_no, name, student_class, parent_phone_number, department_id, adaface_embedding) VALUES (?, ?, ?, ?, ?, ?)",
         (roll_no, name, student_class, parent_phone_number, department_id, serialized_embedding)
     )
     conn.commit()
@@ -159,10 +163,23 @@ def get_all_student_data():
     try:
         conn = sqlite3.connect(DB_FILE)
         cursor = conn.cursor()
-        cursor.execute("SELECT roll_no, name, arcface_embedding FROM students")
+        cursor.execute("SELECT roll_no, name, adaface_embedding FROM students")
         rows = cursor.fetchall()
         conn.close()
-        return {row[0]: {"name": row[1], "arcface_embedding": pickle.loads(row[2])} for row in rows}
+        
+        student_data = {}
+        for row in rows:
+            roll_no, name, embedding_blob = row
+            embedding = None
+            if embedding_blob:
+                # --- CRITICAL FIX: Deserialize using np.frombuffer ---
+                # AdaFace embeddings are 512-dimensional arrays of float32
+                embedding = np.frombuffer(embedding_blob, dtype=np.float32)
+            
+            # --- CRITICAL FIX: Use the correct dictionary key ---
+            student_data[roll_no] = {"name": name, "adaface_embedding": embedding}
+            
+        return student_data
     except sqlite3.OperationalError:
         return {}
 
@@ -447,7 +464,7 @@ def assign_subjects_to_staff(staff_id: int, subject_ids: list[int]):
 def update_staff_role(staff_id: int, is_class_teacher: bool):
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
-    new_role = 'mentor' if is_class_teacher else 'staff'
+    new_role = 'class-teacher' if is_class_teacher else 'staff'
     cursor.execute("UPDATE users SET role = ? WHERE id = ?", (new_role, staff_id))
     conn.commit()
     conn.close()
@@ -503,7 +520,7 @@ def update_student(roll_no: str, name: str, student_class: str, parent_phone_num
 def update_staff_role_and_class(staff_id: int, is_class_teacher: bool, assigned_class: str):
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
-    new_role = 'mentor' if is_class_teacher else 'staff'
+    new_role = 'class-teacher' if is_class_teacher else 'staff'
     # If they are not a class teacher, their assigned class should be null
     final_assigned_class = assigned_class if is_class_teacher else None
     
@@ -531,7 +548,7 @@ def get_all_staff():
     query = """
         SELECT u.id, u.username, u.full_name, d.code, u.role, u.assigned_class
         FROM users u LEFT JOIN departments d ON u.department_id = d.id
-        WHERE u.role IN ('staff', 'mentor') ORDER BY u.full_name
+        WHERE u.role IN ('staff', 'class-teacher') ORDER BY u.full_name
     """
     cursor.execute(query)
     users = [{"id": r[0], "username": r[1], "full_name": r[2], "department": r[3], "role": r[4], "assigned_class": r[5]} for r in cursor.fetchall()]
