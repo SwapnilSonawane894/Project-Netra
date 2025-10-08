@@ -107,7 +107,7 @@ async def run_batch_registration_endpoint(
 async def register_single_student(
     roll_no: str = Form(...), name: str = Form(...), student_class: str = Form(...),
     parent_phone: str = Form(...), photos: List[UploadFile] = File(...),
-    current_user: dict = Depends(auth.require_role(['principal', 'hod', 'class-teacher']))
+    current_user: dict = Depends(auth.require_role(['principal', 'hod', 'mentor']))
 ):
     """Registers a single student from the web UI (This remains secure)."""
     user_dept = current_user.get("dept")

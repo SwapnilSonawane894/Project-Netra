@@ -19,7 +19,7 @@ const navLinks = {
         { name: 'Timetable', path: '/timetable' },
         { name: 'Attendance Report', path: '/reports' },
     ],
-    'class-teacher': [
+    'mentor': [
         { name: 'Live Attendance', path: '/attendance' },
         { name: 'Manage Students', path: '/manage-students' },
         { name: 'Attendance Report', path: '/reports' },

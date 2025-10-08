@@ -113,7 +113,7 @@ async def create_staff(
     if database_handler.get_user_by_username(username):
         raise HTTPException(status_code=400, detail="Username already exists.")
 
-    role = 'class-teacher' if is_class_teacher else 'staff'
+    role = 'mentor' if is_class_teacher else 'staff'
     # If not a class teacher, force assigned_class to be None
     final_assigned_class = assigned_class if is_class_teacher else None
     
@@ -137,7 +137,7 @@ async def get_staff_for_department(current_user: dict = Depends(auth.require_rol
         return database_handler.get_all_staff()
     if not user_dept:
         return []
-    return database_handler.get_users_by_role_and_department(['staff', 'class-teacher'], user_dept)
+    return database_handler.get_users_by_role_and_department(['staff', 'mentor'], user_dept)
 
 @router.delete("/staff/{staff_id}")
 async def delete_staff(staff_id: int, current_user: dict = Depends(auth.require_role(['hod']))):

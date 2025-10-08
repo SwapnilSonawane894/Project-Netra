@@ -17,7 +17,7 @@ export default function AttendancePage() {
   useEffect(() => {
     if (user && isVerifying && currentLecture) {
       // Allow principals, HODs, and all staff/class teachers to view any active lecture
-      if (['principal', 'hod', 'staff', 'class-teacher'].includes(user.role)) {
+      if (['principal', 'hod', 'staff', 'mentor'].includes(user.role)) {
         setCanViewStream(true);
         console.log(`${user.role} can view active lecture: ${currentLecture.subject}`);
       } else {

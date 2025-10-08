@@ -106,7 +106,7 @@ export default function ManageStaffPage() {
     
     const handleEditClick = async (staffMember) => {
         setEditingStaff(staffMember);
-        setEditIsClassTeacher(staffMember.role === 'class-teacher');
+        setEditIsClassTeacher(staffMember.role === 'mentor');
         setEditAssignedClass(staffMember.assigned_class || '');
         try {
             const assignedIds = await getAssignedSubjectsForStaff(staffMember.id);
@@ -208,7 +208,7 @@ export default function ManageStaffPage() {
                             <tr key={member.id}>
                                 <td>{member.full_name}</td>
                                 <td>{member.username}</td>
-                                <td>{member.role === 'class-teacher' ? 'Class Teacher' : 'Staff'}</td>
+                                <td>{member.role === 'mentor' ? 'Class Teacher' : 'Staff'}</td>
                                 <td>{member.assigned_class || 'N/A'}</td>
                                 <td style={{display: 'flex', gap: '10px'}}>
                                     <Button onClick={() => handleEditClick(member)}>Edit</Button>

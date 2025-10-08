@@ -20,6 +20,7 @@ export default function ManageHodsPage() {
     const [editingHod, setEditingHod] = useState(null);
     const [editDepartment, setEditDepartment] = useState('');
     const fetchData = useCallback(async () => {
+        console.log(token)
         if (!token) return;
         const hodsData = await getHods();
         const deptsData = await getDepartments();

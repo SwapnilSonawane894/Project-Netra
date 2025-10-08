@@ -39,7 +39,7 @@ export default function ManageStudentsPage() {
 
     
     // --- NEW: Determine if the user is a class teacher with a specific class ---
-    const isClassTeacherWithClass = user?.role === 'class-teacher' && user?.assignedClass;
+    const isClassTeacherWithClass = user?.role === 'mentor' && user?.assignedClass;
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [availableClasses, setAvailableClasses] = useState([]);
@@ -218,7 +218,7 @@ export default function ManageStudentsPage() {
         <div>
             <h1>Manage Students</h1>
             
-            {(user?.role === 'hod' || user?.role === 'class-teacher' || user?.role === 'principal') && (
+            {(user?.role === 'hod' || user?.role === 'mentor' || user?.role === 'principal') && (
             <Card>
                 <h2>Register New Student</h2>
                 <div className={styles.registrationLayout}>

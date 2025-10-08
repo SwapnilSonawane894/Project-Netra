@@ -100,7 +100,7 @@ async def create_department(
     return new_dept
 
 @router.get("/departments", response_model=List[DepartmentResponse])
-async def get_all_departments(current_user: dict = Depends(auth.require_role(['principal', 'hod', 'class-teacher']))):
+async def get_all_departments(current_user: dict = Depends(auth.require_role(['principal', 'hod', 'mentor']))):
     return database_handler.get_all_departments()
 
 @router.delete("/departments/{dept_id}")

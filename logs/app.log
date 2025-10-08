@@ -11,3 +11,39 @@ Traceback (most recent call last):
     version = _bcrypt.__about__.__version__
               ^^^^^^^^^^^^^^^^^
 AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-10-06 16:43:33,293 - INFO - [whatsapp_sender:17] - TWILIO DEBUG: Credentials loaded from .env file.
+2025-10-06 16:44:17,561 - WARNING - [bcrypt:622] - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/workspaces/Project-Netra/venv/lib/python3.12/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-10-07 10:51:30,133 - INFO - [whatsapp_sender:17] - TWILIO DEBUG: Credentials loaded from .env file.
+2025-10-07 10:55:09,327 - WARNING - [bcrypt:622] - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/workspaces/Project-Netra/venv/lib/python3.12/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-10-07 15:30:13,971 - INFO - [whatsapp_sender:17] - TWILIO DEBUG: Credentials loaded from .env file.
+2025-10-07 15:34:00,480 - WARNING - [bcrypt:622] - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/workspaces/Project-Netra/venv/lib/python3.12/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-10-08 04:33:23,305 - INFO - [whatsapp_sender:17] - TWILIO DEBUG: Credentials loaded from .env file.
+2025-10-08 04:34:18,834 - WARNING - [bcrypt:622] - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/workspaces/Project-Netra/venv/lib/python3.12/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-10-08 07:17:52,485 - INFO - [whatsapp_sender:17] - TWILIO DEBUG: Credentials loaded from .env file.
+2025-10-08 07:17:54,451 - WARNING - [bcrypt:622] - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/workspaces/Project-Netra/venv/lib/python3.12/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-10-08 07:20:24,241 - INFO - [whatsapp_sender:17] - TWILIO DEBUG: Credentials loaded from .env file.

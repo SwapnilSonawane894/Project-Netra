@@ -50,7 +50,7 @@ async def get_students(
     # --- THIS IS THE CRITICAL FIX ---
     # For HODs and Class Teachers, we now show students that match their
     # department OR students that have no department assigned yet (is None).
-    if user_role in ['hod', 'class-teacher']:
+    if user_role in ['hod', 'mentor']:
         if not user_dept:
             raise HTTPException(status_code=403, detail="User is not assigned to a department.")
         
@@ -63,7 +63,7 @@ async def get_students(
     # Regular staff should not see any students on this page.
     return []
 
-@router.post("/students/delete", dependencies=[Depends(auth.require_role(['hod', 'class-teacher', 'principal']))])
+@router.post("/students/delete", dependencies=[Depends(auth.require_role(['hod', 'mentor', 'principal']))])
 async def delete_student_endpoint(request: DeleteStudentRequest):
     success = database_handler.delete_student(request.roll_no)
     if not success:
@@ -213,7 +213,7 @@ async def get_available_classes(current_user: dict = Depends(auth.get_current_us
             # HOD can manage all classes in their department
             return generate_classes_for_departments([user_dept])
         
-        if user_role == 'class-teacher' and current_user.get('assignedClass'):
+        if user_role == 'mentor' and current_user.get('assignedClass'):
             # Class teacher can only manage their assigned class
             return [current_user.get('assignedClass')]
         
@@ -277,7 +277,7 @@ async def get_records(
         hod_students = {s['roll_no'] for s in database_handler.get_all_students_for_management() if s.get('department') == user_dept}
         return [r for r in all_records if r['roll_no'] in hod_students]
 
-    if user_role in ['staff', 'class-teacher']:
+    if user_role in ['staff', 'mentor']:
         return database_handler.get_attendance_records_by_teacher(user_name, filter_date=date)
     
     return []
@@ -306,7 +306,7 @@ async def get_records_by_teacher(
 async def get_my_records(
     date: Optional[str] = None,
     # This endpoint is protected and uses the user's token to identify them
-    current_user: dict = Depends(auth.require_role(['staff', 'class-teacher', 'hod', 'principal']))
+    current_user: dict = Depends(auth.require_role(['staff', 'mentor', 'hod', 'principal']))
 ):
     """Fetches historical attendance records for the currently logged-in teacher."""
     teacher_name = current_user.get("fullName")
@@ -320,7 +320,7 @@ async def get_my_records(
 async def update_student_endpoint(
     roll_no: str,
     student_data: StudentUpdate,
-    current_user: dict = Depends(auth.require_role(['principal', 'hod', 'class-teacher']))
+    current_user: dict = Depends(auth.require_role(['principal', 'hod', 'mentor']))
 ):
     """Allows an authorized user to update a student's details."""
     # (Optional) Add logic here to ensure a CT can only edit students in their own dept
@@ -377,7 +377,7 @@ async def get_students(
     # --- THIS IS THE CRITICAL FIX ---
     # For HODs and Class Teachers, we now show students that match their
     # department OR students that have no department assigned yet (is None).
-    if user_role in ['hod', 'class-teacher']:
+    if user_role in ['hod', 'mentor']:
         if not user_dept:
             raise HTTPException(status_code=403, detail="User is not assigned to a department.")
         
@@ -390,7 +390,7 @@ async def get_students(
     # Regular staff should not see any students on this page.
     return []
 
-@router.post("/students/delete", dependencies=[Depends(auth.require_role(['hod', 'class-teacher', 'principal']))])
+@router.post("/students/delete", dependencies=[Depends(auth.require_role(['hod', 'mentor', 'principal']))])
 async def delete_student_endpoint(request: DeleteStudentRequest):
     success = database_handler.delete_student(request.roll_no)
     if not success:
